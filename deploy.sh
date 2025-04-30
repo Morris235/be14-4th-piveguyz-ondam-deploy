@@ -11,20 +11,20 @@ echo "Docker 이미지 빌드 시작"
 echo "[1/2] 백엔드 Docker 이미지 빌드"
 cd backend/ondam-backend
 docker build -t morris235/ondam-backend:latest .
-cd ..
+cd ../..
 
 echo "[2/2] 백엔드 컨테이너 실행"
 
 # 기존 컨테이너 제거 (있다면)
 docker rm -f ondam-backend || true
 
-# 백엔드 실행 (포트 8080 → 8080)
+# 백엔드 실행 (포트 8083 → 8083)
 docker run -d \
   --name ondam-backend \
-  -p 8080:8080 \
+  -p 8083:8083 \
   morris235/ondam-backend:latest
 
-echo "백엔드 실행 완료: http://localhost:8080"
+echo "백엔드 실행 완료: http://localhost:8083"
 
 ##############################
 # 백엔드 Docker 빌드 & 실행
