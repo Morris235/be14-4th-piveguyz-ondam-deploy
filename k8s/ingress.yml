@@ -14,13 +14,13 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: ondam-backend-service # 백엔드 서비스 이름
+                name: ondam-back-ser # 백엔드 서비스 이름
                 port:
                   number: 8080
           - path: / # 모든 다른 요청은 프론트엔드 서비스로 전달
             pathType: Prefix
             backend:
               service:
-                name: ondam-frontend-service # 프론트엔드 서비스 이름
+                name: ondam-front-ser # 프론트엔드 서비스 이름
                 port:
                   number: 80
