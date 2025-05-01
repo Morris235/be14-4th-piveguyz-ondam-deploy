@@ -1,26 +1,25 @@
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+apiVersion: networking.k8s.io/v1 # Ingress 리소스의 API 버전
+kind: Ingress # 리소스 종류: Ingress (HTTP 트래픽 라우팅)
 metadata:
-  name: ondam-ingress
-  namespace: ondam
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /$2 # "/api/xxx" 를 "/xxx"로 바꿔서 백엔드로 전달
+  name: ondam-ingress # Ingress 리소스의 이름
+  namespace: ondam # 배포 대상 네임스페이스
+
 spec:
   rules:
-    - host: ondam.localhost # 이 부분은 로컬 환경에서 'ondam.localhost'로 설정합니다.
+    - host: ondam.localhost # 요청 도메인: 로컬 테스트용 도메인 (hosts 파일에 등록 필요)
       http:
         paths:
-          - path: /api/(.*) # /api/로 시작하는 요청을 백엔드 서비스로 전달
-            pathType: Prefix
+          - path: /api # "/api"로 시작하는 모든 요청 처리
+            pathType: Prefix # 접두사 기준 매칭 (예: /api/v1 등도 포함)
             backend:
               service:
-                name: ondam-back-ser # 백엔드 서비스 이름
+                name: ondam-back-ser # 요청을 전달할 백엔드 Service 이름
                 port:
-                  number: 8080
-          - path: / # 모든 다른 요청은 프론트엔드 서비스로 전달
-            pathType: Prefix
+                  number: 8080 # 백엔드 Service가 노출하는 포트 번호
+          - path: / # 그 외 모든 요청 처리 (정적 리소스 포함)
+            pathType: Prefix # 접두사 기준 매칭 (예: /main, /about 등)
             backend:
               service:
-                name: ondam-front-ser # 프론트엔드 서비스 이름
+                name: ondam-front-ser # 요청을 전달할 프론트엔드 Service 이름
                 port:
-                  number: 80
+                  number: 80 # 프론트엔드 Service가 노출하는 포트 번호
