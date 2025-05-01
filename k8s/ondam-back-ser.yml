@@ -11,4 +11,4 @@ spec:
     - protocol: TCP
       port: 8080
       targetPort: 8080
-      nodePort: 31083 # <== 외부에서 접속할 포트
+      nodePort: 30083 # <== 외부에서 접속할 포트
