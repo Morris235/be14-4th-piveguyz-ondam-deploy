@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ondam-front-app # Argo CD에 표시될 이름
+  namespace: argocd # Argo CD가 설치된 네임스페이스
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/Pive-Guyz/be14-4th-piveguyz-ondam.git # Git 레포 URL
+    targetRevision: main # Git 브랜치
+    path: k8s # 리소스가 위치한 경로
+
+  destination:
+    server: https://kubernetes.default.svc # 배포 대상 클러스터 (현재 클러스터)
+    namespace: ondam # 배포될 네임스페이스
+
+  syncPolicy:
+    automated: # 자동 동기화 설정
+      prune: true # 불필요한 리소스 자동 제거
+      selfHeal: true # 상태 불일치 시 자동 복구
+    syncOptions:
+      - CreateNamespace=true # 네임스페이스 자동 생성 허용
