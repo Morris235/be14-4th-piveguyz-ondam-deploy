@@ -3,8 +3,15 @@ kind: Ingress # 리소스 종류: Ingress (HTTP 트래픽 라우팅)
 metadata:
   name: ondam-ingress # Ingress 리소스의 이름
   namespace: ondam # 배포 대상 네임스페이스
+  annotations:
+    # 기본적으로 NGINX Ingress 컨트롤러는 모든 HTTP 트래픽을 HTTPS로 리다이렉트한다.
+    # 이 설정을 "false"로 지정하면 HTTP 요청을 HTTPS로 자동 리다이렉트 하지 않는다.
+    # 개발 환경이나 SSL/TLS가 필요 없는 상황에서 유용하다.
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
 
 spec:
+  # 사용할 Ingress 컨트롤러의 클래스를 지정. 여기서는 NGINX Ingress 컨트롤러를 사용하도록 설정
+  ingressClassName: nginx
   rules:
     - host: ondam.localhost # 요청 도메인: 로컬 테스트용 도메인 (hosts 파일에 등록 필요)
       http:
