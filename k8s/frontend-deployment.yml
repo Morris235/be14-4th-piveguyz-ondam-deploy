@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ondam-frontend
+  namespace: ondam
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ondam-frontend
+  template:
+    metadata:
+      labels:
+        app: ondam-frontend
+    spec:
+      containers:
+        - name: ondam-frontend
+          image: morris235/ondam-frontend:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80

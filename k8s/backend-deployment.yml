@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ondam-backend
+  namespace: ondam
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ondam-backend
+  template:
+    metadata:
+      labels:
+        app: ondam-backend
+    spec:
+      containers:
+        - name: ondam-backend
+          image: morris235/ondam-backend:latest
+          ports:
+            - containerPort: 8080
