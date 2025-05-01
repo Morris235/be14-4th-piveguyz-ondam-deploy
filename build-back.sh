@@ -5,6 +5,9 @@ set -e  # 에러 발생 시 종료
 echo "백엔드 Docker 이미지 빌드"
 cd backend/ondam-backend
 docker build -t morris235/ondam-backend:latest .
+
+echo "Docker Hub에 백엔드 이미지 푸시"
+docker push morris235/ondam-backend:latest
 cd ../..
 
 echo "백엔드 컨테이너 실행"

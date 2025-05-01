@@ -5,6 +5,9 @@ set -e  # 에러 발생 시 종료
 echo "프론트엔드 Docker 이미지 빌드"
 cd frontend
 docker build -t morris235/ondam-frontend:latest .
+
+echo "Docker Hub에 프론트엔드 이미지 푸시"
+docker push morris235/ondam-frontend:latest
 cd ..
 
 echo "프론트엔드 컨테이너 실행"
