@@ -10,11 +10,11 @@ echo "Docker Hub에 프론트엔드 이미지 푸시"
 docker push morris235/ondam-frontend:latest
 cd ..
 
-echo "프론트엔드 컨테이너 실행"
-docker rm -f ondam-frontend || true
-docker run -d \
-  --name ondam-frontend \
-  -p 3000:80 \
-  morris235/ondam-frontend:latest
+# echo "프론트엔드 컨테이너 실행"
+# docker rm -f ondam-frontend || true
+# docker run -d \
+#   --name ondam-frontend \
+#   -p 3000:80 \
+#   morris235/ondam-frontend:latest
 
-echo "프론트엔드 실행 완료: http://localhost:3000"
+# echo "프론트엔드 실행 완료: http://localhost:3000"
