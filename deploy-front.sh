@@ -28,4 +28,7 @@ echo "🚀 ondam-frontend Deployment 및 Service 배포"
 kubectl apply -f k8s/ondam-front-dep.yml
 kubectl apply -f k8s/ondam-front-ser.yml
 
-echo "✅ 프론트엔드 배포 완료"
+echo "♻️ 변경된 이미지를 반영하기 위해 rollout restart 실행"
+kubectl rollout restart deployment ondam-front-dep -n ondam
+
+echo "✅ 프론트엔드 배포 및 롤아웃 완료"
