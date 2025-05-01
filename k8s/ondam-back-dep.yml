@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ondam-backend
+  name: ondam-back-dep
   namespace: ondam
 spec:
   replicas: 1
@@ -16,5 +16,6 @@ spec:
       containers:
         - name: ondam-backend
           image: morris235/ondam-backend:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
