@@ -1,3 +1,6 @@
+<details>
+<summary>배포 파이프라인</summary>
+
 # 🔧 온담 프로젝트 CI/CD 파이프라인
 
 Vue 3 프론트엔드와 Spring Boot 백엔드가 독립적으로 구성된 `be14-4th-piveguyz-ondam` 프로젝트는  
@@ -14,41 +17,13 @@ Vue 3 프론트엔드와 Spring Boot 백엔드가 독립적으로 구성된 `be1
 - **Docker**: Apple Silicon 대응 multi-arch 이미지 빌드
 - **Kubernetes**: 무중단 배포를 위한 `rollout restart` 전략 적용
 
----
-
-## 📁 프로젝트 구조
-
-\`\`\`
-be14-4th-piveguyz-ondam/
-├── backend/
-├── frontend/
-├── k8s/
-│ ├── ondam-back-_.yml
-│ ├── ondam-front-_.yml
-│ └── ingress.yml
-├── argocd/
-│ └── ondam-front-app.yml
-├── build-back.sh
-├── build-front.sh
-├── deploy-back.sh
-├── deploy-front.sh
-├── deploy-all.sh
-└── deploy-ingress.sh
-\`\`\`
-
----
-
 ## 🛎️ 초기 수동 배포 → Jenkins 자동화 전환
 
 ### ✴️ 수동 배포 당시
 
-- `build-*.sh`, `deploy-*.sh` 스크립트를 직접 실행
-- 반복 작업이 많고, 실수 발생 확률 높음
-
-\`\`\`bash
-./build-front.sh
-./deploy-front.sh
-\`\`\`
+- `build-*.sh`, `deploy-*.sh` 와 같은 스크립트를 직접 만들어 실행
+- 반복 작업과, 실수 발생 확률 줄임
+- 명령어 문서화 효과로 추후 리마인드 가능
 
 ### ✅ Jenkins 도입 후
 
@@ -63,8 +38,8 @@ be14-4th-piveguyz-ondam/
 
 ### ✅ Jenkins (CI)
 
-- GitHub Webhook 기반 트리거
-- 디렉터리별 변경 감지 → `build-front.sh`, `build-back.sh` 실행
+- GitHub Webhook 기반 트리거 (main 브렌치)
+- 하나의 webhook 신호로 서브모듈별 변경 감지 → 프론트와 백엔드 각각 배포
 - Docker 이미지 빌드 및 Push
 - `k8s/*.yml` 이미지 태그 업데이트 후 Git push
 
@@ -75,14 +50,31 @@ be14-4th-piveguyz-ondam/
 
 ---
 
-## 🧱 멀티레포 구성의 장점
+## 🧱 멀티레포 구성의 장단점
+
+### 장점
 
 - **독립적인 빌드 및 배포 가능**
+
   - 프론트 변경 시 → `frontend`만 빌드/배포
   - 백엔드 변경 시 → `backend`만 빌드/배포
+  - Jenkins는 메인 레포 기준으로 하나의 Webhook을 받아 git diff로 변경 감지 후 해당 서브모듈만 빌드 & 배포
+
 - **협업 효율 증가**
-  - 팀 간 코드 충돌 최소화
-- **서브모듈 구조 덕분에 전체 파이프라인은 메인 레포지토리에서 관리**
+  - 팀원 간 코드 충돌 최소화
+  - 개발과 배포작업을 병렬적으로 처리 가능
+
+### 단점
+
+- **submodule 동기화 이슈**
+
+  - git submodule update, status, 커밋 누락 등의 실수 발생 가능
+  - 프론트/백을 수정한 뒤 메인 레포에서 커밋 포인터를 갱신해야 하는 작업 오버헤드 발생
+
+- **구조적 문제**
+  - Github Actions등 다른 CI를 쓰기 어렵고, Jenkins 중심 구조가 고착됨
+  - submodule이 늘어 날수록 유지보수가 어려워짐 (2~3개가 한계)
+  - 하나의 파이프라인으로 N개 이상의 서비스를 배포 하기 때문에 복잡성이 증가하고 이력관리가 어려움
 
 ---
 
@@ -305,18 +297,19 @@ pipeline {
 
 온담 프로젝트는 다음과 같은 **단계적 브랜치 전략**을 기반으로 안정적인 배포 흐름을 구축했습니다.
 
-### 🗂 브랜치 구조
+### 🗂 배포 브랜치 구조
+
+#### frontend & backend
 
 - `develop`: 기능 개발 및 통합 테스트 진행
 - `deploy/dev-snapshot`: 배포 직전 단계의 검증 브랜치
-- `main`: 실제 운영용 코드가 머지되는 최종 브랜치
 
 ### 🔗 멀티레포 연동 방식
 
 - `frontend/`, `backend/`는 각각 별도의 독립 레포로 운영됨
 - 메인 레포인 `be14-4th-piveguyz-ondam`에는 두 레포가 Git Submodule로 연결되어 있음
 - 브랜치 전략은 **서브모듈에서도 동일하게 적용**되며,
-  - `develop` → `deploy/dev-snapshot` → 메인 레포 반영 → Argo CD 배포 흐름으로 이어짐
+  - `develop` → `deploy/dev-snapshot` → 메인 레포의 main 브렌치에 반영 → jenkins, Argo CD 배포 흐름으로 이어짐
 
 ### ✅ 흐름 요약
 
@@ -324,6 +317,4 @@ pipeline {
 2. 기능 완료 시 `deploy/dev-snapshot`로 머지하여 배포 대상 확정
 3. 메인 레포지토리의 Submodule을 업데이트하여 `main` 브랜치로 커밋
 4. Jenkins → Argo CD로 이어지는 자동화 배포 트리거
-
-이 방식은 **기능 개발, 검증, 배포를 명확하게 분리**하고,  
-각 서비스의 변경을 독립적으로 배포 가능하게 만들어줍니다.
+</details>
