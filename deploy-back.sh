@@ -28,6 +28,7 @@ echo "🚀 ondam-backend Deployment 및 Service 배포"
 kubectl apply -f k8s/ondam-back-dep.yml
 kubectl apply -f k8s/ondam-back-ser.yml
 
+# 수동배포용
 echo "♻️ 변경된 이미지를 반영하기 위해 rollout restart 실행"
 kubectl rollout restart deployment ondam-back-dep -n ondam
 
