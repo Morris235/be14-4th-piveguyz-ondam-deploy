@@ -1,6 +1,3 @@
-<details>
-<summary>배포 파이프라인</summary>
-
 # 🔧 온담 프로젝트 CI/CD 파이프라인
 
 Vue 3 프론트엔드와 Spring Boot 백엔드가 독립적으로 구성된 `be14-4th-piveguyz-ondam` 프로젝트는  
@@ -121,4 +118,3 @@ Vue 3 프론트엔드와 Spring Boot 백엔드가 독립적으로 구성된 `be1
 2. 기능 완료 시 `deploy/dev-snapshot`로 머지하여 배포 대상 확정
 3. 메인 레포지토리의 Submodule을 업데이트하여 `main` 브랜치로 커밋
 4. Jenkins → Argo CD로 이어지는 자동화 배포 트리거
-</details>
